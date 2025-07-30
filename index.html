@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Personas</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Registro de Personas</h1>
+    <form id="personaForm">
+        <input type="text" id="nombre" placeholder="Nombre" required>
+        <input type="number" id="edad" placeholder="Edad" required>
+        <button type="submit">Registrar</button>
+    </form>
+    <table id="personasTable">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Edad</th>
+            </tr>
+        </thead>
+        <tbody id="personasBody"></tbody>
+    </table>
+
+    <script>
+        // Configurar Supabase
+        const supabaseUrl = 'postgresql://postgres:[YOUR-PASSWORD]@db.xjnazyjtgsxukmprouwt.supabase.co:5432/postgres'; // Reemplaza con tu URL de Supabase
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhqbmF6eWp0Z3N4dWttcHJvdXd0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4ODkzODksImV4cCI6MjA2OTQ2NTM4OX0.0ZLYc9shb5dWLQvhM31fDpmbAGxdfIxDlU8nkNI9g3A'; // Reemplaza con tu Anon Public Key
+        const supabase = Supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Cargar datos al iniciar
+        async function cargarPersonas() {
+            const { data, error } = await supabase
+                .from('personas')
+                .select('*');
+            if (error) {
+                console.error('Error al cargar datos:', error);
+                return;
+            }
+            const tbody = document.getElementById('personasBody');
+            tbody.innerHTML = '';
+            data.forEach(persona => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${persona.nombre}</td><td>${persona.edad}</td>`;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Registrar nueva persona
+        document.getElementById('personaForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nombre = document.getElementById('nombre').value;
+            const edad = parseInt(document.getElementById('edad').value);
+
+            const { error } = await supabase
+                .from('personas')
+                .insert([{ nombre, edad }]);
+            
+            if (error) {
+                console.error('Error al registrar:', error);
+                return;
+            }
+
+            document.getElementById('personaForm').reset();
+            cargarPersonas();
+        });
+
+        // Cargar datos al cargar la página
+        cargarPersonas();
+    </script>
+</body>
+</html>
