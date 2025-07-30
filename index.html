@@ -64,7 +64,7 @@
         // Configurar Supabase
         const supabaseUrl = 'postgresql://postgres:[YOUR-PASSWORD]@db.xjnazyjtgsxukmprouwt.supabase.co:5432/postgres'; // Reemplaza con tu URL de Supabase
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhqbmF6eWp0Z3N4dWttcHJvdXd0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4ODkzODksImV4cCI6MjA2OTQ2NTM4OX0.0ZLYc9shb5dWLQvhM31fDpmbAGxdfIxDlU8nkNI9g3A'; // Reemplaza con tu Anon Public Key
-        const supabase = Supabase.createClient(supabaseUrl, supabaseKey);
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
         // Cargar datos al iniciar
         async function cargarPersonas() {
